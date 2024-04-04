@@ -35,8 +35,12 @@ export function loadCamera(scene: THREE.Scene, containerRef: React.RefObject<HTM
         containerRef.current.appendChild(renderer.domElement);
 
         const controls = new OrbitControls(camera, renderer.domElement);
-
-
+        controls.enableDamping = true;
+        controls.minDistance = 100;
+        controls.maxDistance = 3000;
+        controls.enablePan = false;
+        controls.maxPolarAngle = Math.PI / 2;
+        controls.minPolarAngle = - Math.PI / 2;
         
         const renderScene = () => {
             requestAnimationFrame(renderScene);
