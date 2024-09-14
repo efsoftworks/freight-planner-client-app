@@ -7,7 +7,8 @@ name: Deploy Freight Planner Client to App
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["dev/v1.0.0"]
+    branches:
+      - "v1.0.0"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -30,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
       - name: Detect package manager
         id: detect-package-manager
         run: |
@@ -51,16 +52,24 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "lts/*"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
+      - name: Make envfile
+        run: |
+          touch .env.local
+          echo NEXT_PUBLIC_INFURA_NODE=${{ secrets.NEXT_PUBLIC_INFURA_NODE }} >> .env.local
+          echo NEXT_PUBLIC_INFURA_RETRIEVE_FILE=${{ secrets.NEXT_PUBLIC_INFURA_RETRIEVE_FILE }} >> .env.local 
+          echo NEXT_PUBLIC_INFURA_RETRIEVE_JSON=${{ secrets.NEXT_PUBLIC_INFURA_RETRIEVE_JSON }} >> .env.local 
+          echo NEXT_PUBLIC_INFURA_SECRET=${{ secrets.NEXT_PUBLIC_INFURA_SECRET }} >> .env.local  
+          echo NEXT_PUBLIC_INFURA_UPLOAD_FILE=${{ secrets.NEXT_PUBLIC_INFURA_UPLOAD_FILE }} >> .env.local  
+          echo NEXT_PUBLIC_INFURA_UPLOAD_JSON=${{ secrets.NEXT_PUBLIC_INFURA_UPLOAD_JSON }} >> .env.local  
+          echo NEXT_PUBLIC_NFT_CONTRACT_ADDRESS=${{ secrets.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS }} >> .env.local  
+          echo NEXT_PUBLIC_PINATA_API_KEY=${{ secrets.NEXT_PUBLIC_PINATA_API_KEY }} >> .env.local  
+          echo NEXT_PUBLIC_PINATA_JWT=${{ secrets.NEXT_PUBLIC_PINATA_JWT }} >> .env.local  
+          echo NEXT_PUBLIC_PINATA_PIN_HASH=${{ secrets.NEXT_PUBLIC_PINATA_PIN_HASH }} >> .env.local  
+          echo NEXT_PUBLIC_PINATA_SECRET_API_KEY=${{ secrets.NEXT_PUBLIC_PINATA_SECRET_API_KEY }} >> .env.local  
       - name: Setup Pages
         uses: actions/configure-pages@v4
-        with:
-          # Automatically inject basePath in your Next.js configuration file and disable
-          # server side image optimization (https://nextjs.org/docs/api-reference/next/image#unoptimized).
-          #
-          # You may remove this line if you want to manage the configuration yourself.
-          static_site_generator: next
       - name: Restore cache
         uses: actions/cache@v4
         with:
@@ -75,12 +84,11 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
-      - name: LS
-        run: ls  
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v2
         with:
           path: ./out
+          
 
   # Deployment job
   deploy:
@@ -92,4 +100,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v2
