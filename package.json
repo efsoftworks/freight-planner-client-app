@@ -1,11 +1,11 @@
 {
   "name": "freight-planner-client-app",
+  "homepage": "https://efsoftworks.github.io/freight-planner-client-app",
   "author": {
     "name": "EFSoftWorks",
     "email": "info@efsoftworks.com"
   },
   "description": "Freight Planner Client App",
-  "homepage": "https://efsoftworks.github.io/freight-planner-client-app",
   "repository": "https://github.com/efsoftworks/nft-marketplace-app",
   "keywords": [
     "freight",
